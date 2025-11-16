@@ -64,6 +64,7 @@ type
     procedure SwitchToWindow(const Handle: string);
     procedure SwitchToMainWindow;
     procedure SwitchToWindowIndex(Index: Integer);
+    function GetCurrentWindowIndex: Integer;
     procedure CloseWindow;
     function NewWindow(const WindowType: string = 'tab'): string;
     procedure MaximizeWindow;
@@ -129,6 +130,20 @@ begin
   finally
     JSON.Free;
   end;
+end;
+
+function TWebDriver.GetCurrentWindowIndex: Integer;
+var
+  Handles: TArray<string>;
+  Current: string;
+  I: Integer;
+begin
+  Handles := GetWindowHandles;
+  Current := GetWindowHandle;
+  for I := 0 to High(Handles) do
+    if Handles[I] = Current then
+      Exit(I);
+  Result := -1;
 end;
 
 procedure TWebDriver.SwitchToWindowIndex(Index: Integer);

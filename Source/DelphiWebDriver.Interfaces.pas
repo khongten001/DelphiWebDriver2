@@ -77,6 +77,7 @@ type
     procedure SwitchToWindow(const Handle: string);
     procedure SwitchToMainWindow;
     procedure SwitchToWindowIndex(Index: Integer);
+    function GetCurrentWindowIndex: Integer;
     procedure CloseWindow;
     function NewWindow(const WindowType: string = 'tab'): string;
     procedure MaximizeWindow;
