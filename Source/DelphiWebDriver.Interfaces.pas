@@ -72,6 +72,14 @@ type
     function ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue; overload;
     procedure ExecuteAsyncScript(const Script: string); overload;
     procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
+    function GetWindowHandle: string;
+    function GetWindowHandles: TArray<string>;
+    procedure SwitchToWindow(const Handle: string);
+    procedure CloseWindow;
+    function NewWindow(const WindowType: string = 'tab'): string;
+    procedure MaximizeWindow;
+    procedure MinimizeWindow;
+    procedure FullscreenWindow;
   end;
 
 implementation

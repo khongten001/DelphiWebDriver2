@@ -58,6 +58,14 @@ type
     function ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue; overload;
     procedure ExecuteAsyncScript(const Script: string); overload;
     procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
+    function GetWindowHandle: string;
+    function GetWindowHandles: TArray<string>;
+    procedure SwitchToWindow(const Handle: string);
+    procedure CloseWindow;
+    function NewWindow(const WindowType: string = 'tab'): string;
+    procedure MaximizeWindow;
+    procedure MinimizeWindow;
+    procedure FullscreenWindow;
   end;
 
 implementation
@@ -75,6 +83,123 @@ destructor TWebDriver.Destroy;
 begin
   FHTTP.Free;
   inherited;
+end;
+
+function TWebDriver.GetWindowHandle: string;
+var
+  JSON: TJSONValue;
+begin
+  JSON := SendCommand('GET', '/session/' + FSessionId + '/window');
+  try
+    Result := JSON.GetValue<string>('value');
+  finally
+    JSON.Free;
+  end;
+end;
+
+function TWebDriver.GetWindowHandles: TArray<string>;
+var
+  JSON: TJSONValue;
+  Arr: TJSONArray;
+  I: Integer;
+begin
+  JSON := SendCommand('GET', '/session/' + FSessionId + '/window/handles');
+  try
+    Arr := JSON.GetValue<TJSONArray>('value');
+
+    SetLength(Result, Arr.Count);
+    for I := 0 to Arr.Count - 1 do
+      Result[I] := Arr.Items[I].Value;
+  finally
+    JSON.Free;
+  end;
+end;
+
+procedure TWebDriver.SwitchToWindow(const Handle: string);
+var
+  JSON: TJSONObject;
+begin
+  JSON := TJSONObject.Create;
+  try
+    JSON.AddPair('handle', Handle);
+    SendCommand('POST', '/session/' + FSessionId + '/window', JSON).Free;
+  finally
+    JSON.Free;
+  end;
+end;
+
+procedure TWebDriver.CloseWindow;
+begin
+  SendCommand('DELETE', '/session/' + FSessionId + '/window').Free;
+end;
+
+procedure TWebDriver.MaximizeWindow;
+var
+  Body: TJSONObject;
+  R: TJSONValue;
+begin
+  Body := TJSONObject.Create;
+  R := nil;
+  try
+    R := SendCommand('POST', '/session/' + FSessionId + '/window/maximize', Body);
+  finally
+    Body.Free;
+    R.Free;
+  end;
+end;
+
+procedure TWebDriver.MinimizeWindow;
+var
+  Body: TJSONObject;
+  R: TJSONValue;
+begin
+  Body := TJSONObject.Create;
+  R := nil;
+  try
+    R := SendCommand('POST', '/session/' + FSessionId + '/window/minimize', Body);
+  finally
+    Body.Free;
+    R.Free;
+  end;
+end;
+
+procedure TWebDriver.FullscreenWindow;
+var
+  Body: TJSONObject;
+  R: TJSONValue;
+begin
+  Body := TJSONObject.Create;
+  R := nil;
+  try
+    R := SendCommand('POST', '/session/' + FSessionId + '/window/fullscreen', Body);
+  finally
+    Body.Free;
+    R.Free;
+  end;
+end;
+
+function TWebDriver.NewWindow(const WindowType: string): string;
+var
+  JSON: TJSONValue;
+  Body: TJSONObject;
+  ValueObj: TJSONObject;
+begin
+  Body := TJSONObject.Create;
+  try
+    Body.AddPair('type', WindowType);
+
+    JSON := SendCommand('POST', '/session/' + FSessionId + '/window/new', Body);
+    try
+      ValueObj := JSON.GetValue<TJSONObject>('value');
+      if not Assigned(ValueObj) then
+        raise EWebDriverError.Create('NewWindow: no value returned');
+      Result := ValueObj.GetValue<string>('handle');
+    finally
+      JSON.Free;
+    end;
+  finally
+    Body.Free;
+  end;
 end;
 
 function TWebDriver.ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue;
