@@ -37,8 +37,8 @@ type
     procedure Navigate(const Url: string);
     function GetTitle: string;
     function GetCurrentUrl: string;
-    procedure Back;
-    procedure Forward;
+    procedure GoBack;
+    procedure GoForward;
     procedure Refresh;
     procedure SwitchToFrameElement(const Element: IWebElement);
     procedure SwitchToFrame(const FrameName: string);
@@ -47,6 +47,7 @@ type
     function TakeScreenshot: TBytes;
     procedure SaveScreenshotToFile(const FileName: string);
     function WaitUntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
+    function WaitUntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
     function ExecuteScript(const Script: string; const Args: array of string): TJSONValue; overload;
     procedure ExecuteScript(const Script: string); overload;
     function ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue; overload;
@@ -119,6 +120,29 @@ begin
   finally
     Resp.Free;
   end;
+end;
+
+function TWebDriver.WaitUntilElements(By: TBy; TimeoutMS, IntervalMS: Integer): TArray<IWebElement>;
+var
+  Found: TArray<IWebElement>;
+  StartTime: TDateTime;
+begin
+  StartTime := Now;
+  while MilliSecondsBetween(Now, StartTime) < TimeoutMS do
+  begin
+    try
+      Found := FindElements(By);
+      if Length(Found) > 0 then
+      begin
+        Result := Found;
+        Exit;
+      end;
+    except
+      // ignore and retry
+    end;
+    Sleep(IntervalMS);
+  end;
+  SetLength(Result, 0);
 end;
 
 function TWebDriver.WaitUntilElement(By: TBy; TimeoutMS, IntervalMS: Integer) : IWebElement;
@@ -409,7 +433,7 @@ begin
   end;
 end;
 
-procedure TWebDriver.Back;
+procedure TWebDriver.GoBack;
 var
   JSON: TJSONObject;
 begin
@@ -422,7 +446,7 @@ begin
   end;
 end;
 
-procedure TWebDriver.Forward;
+procedure TWebDriver.GoForward;
 var
   JSON: TJSONObject;
 begin
