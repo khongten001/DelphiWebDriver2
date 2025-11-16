@@ -62,19 +62,33 @@ begin
 end;
 
 procedure TWebElement.Click;
+var
+  JSON : TJSONObject;
 begin
-  FDriver.SendCommand('POST',
-    '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/click',
-    TJSONObject.Create
-  ).Free;
+  JSON := TJSONObject.Create;
+  try
+    FDriver.SendCommand('POST',
+      '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/click',
+      JSON
+    ).Free;
+  finally
+    JSON.Free;
+  end;
 end;
 
 procedure TWebElement.Clear;
+var
+  JSON : TJSONObject;
 begin
-  FDriver.SendCommand('POST',
-    '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/clear',
-    TJSONObject.Create
-  ).Free;
+  JSON := TJSONObject.Create;
+  try
+    FDriver.SendCommand('POST',
+      '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/clear',
+      JSON
+    ).Free;
+  finally
+    JSON.Free;
+  end;
 end;
 
 procedure TWebElement.SendKeys(const Text: string);
@@ -94,11 +108,18 @@ begin
 end;
 
 procedure TWebElement.Submit;
+var
+  JSON : TJSONObject;
 begin
-  FDriver.SendCommand('POST',
-    '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/submit',
-    TJSONObject.Create
-  ).Free;
+  JSON := TJSONObject.Create;
+  try
+    FDriver.SendCommand('POST',
+      '/session/' + FDriver.GetSessionId + '/element/' + FElementId + '/submit',
+      JSON
+    ).Free;
+  finally
+    JSON.Free;
+  end;
 end;
 
 function TWebElement.GetText: string;
