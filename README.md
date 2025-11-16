@@ -1,82 +1,136 @@
-# Delphi WebDriver
+# DelphiWebDriver
 
 A modern, lightweight Delphi client for the W3C WebDriver protocol (the same protocol used by Selenium). This library allows Delphi developers to automate browsers such as Chrome, Firefox, and Edge by communicating with their corresponding WebDriver executables.
 
-## ✨ Features (Planned)
+---
+
+## ✨ Features
 
 * Create and manage WebDriver sessions
 * Navigate to URLs
-* Locate elements (By.Id, By.Name, By.CSS, By.XPath...)
+* Locate elements (`By.Id`, `By.Name`, `By.ClassName`, `By.CSS`, `By.XPath`)
 * Click elements, send keys, submit forms
-* Execute JavaScript
-* Take screenshots
-* Basic wait utilities
-* Cross-browser support (Chrome, Firefox, Edge)
+* Take screenshots and save to file
+* Wait for elements to appear or conditions to be true
+* Manage cookies, frames
+* Interface-based memory management for stability
+* Cross-browser support (Chrome only for now)
+
+---
 
 ## 📁 Project Structure
 
 ```
 /DelphiWebDriver
-  /src
-    WebDriver.Core.pas
-    WebDriver.Chrome.pas
-    WebDriver.Firefox.pas
-    WebDriver.Edge.pas
-    WebDriver.Element.pas
-    WebDriver.JSON.pas
-  /examples
-    SimpleGoogleSearch
+  /Source
+    DelphiWebDriver.Core.pas
+    DelphiWebDriver.Element.pas
+    DelphiWebDriver.Interfaces.pas
+    DelphiWebDriver.Types.pas
+    DelphiWebDriver.Capabilities.pas
+    DelphiWebDriver.Server.pas
+    DelphiWebDriver.Cookies.pas
+  /Demo
+    DelphiWebDriverDemo.Main.pas
+    DelphiWebDriverDemo.Main.fmx
   README.md
   LICENSE
 ```
+
+> `Source/` contains the core library units
+> `Demo/` contains a small FMX demo showing Chrome automation
+
+---
 
 ## 🚀 Getting Started
 
 ### Requirements
 
-* Delphi 10.2+ (any recent version should work)
+* Delphi 10.2+ (or any recent version)
 * Corresponding WebDriver binaries:
 
-  * ChromeDriver
-  * GeckoDriver
-  * EdgeDriver
+  * ChromeDriver (download from here https://developer.chrome.com/docs/chromedriver/downloads)
 
 Place the driver executable in your PATH or next to your application.
+
+---
 
 ### Example Usage
 
 ```delphi
+uses
+  DelphiWebDriver.Core,
+  DelphiWebDriver.Types,
+  DelphiWebDriver.Capabilities,
+  DelphiWebDriver.Server,
+  DelphiWebDriver.Interfaces;
+
+procedure TMainForm.StartChromeButtonClick(Sender: TObject);
 var
-  Driver: TChromeDriver;
-  SearchBox: TWebElement;
+  Server: TWebDriverServer;
+  Driver: IWebDriver;
+  Caps: TWebDriverCapabilities;
+  TranslateBox: IWebElement;
 begin
-  Driver := TChromeDriver.Create;
+  Server := TWebDriverServer.Create('chromedriver.exe');
   try
-    Driver.Start;
-    Driver.Get('https://www.google.com');
+    Server.Start; // launch ChromeDriver
 
-    SearchBox := Driver.FindElement(By.Name('q'));
-    SearchBox.SendKeys('Delphi WebDriver');
-    SearchBox.Submit;
+    Driver := TWebDriver.Create('http://localhost:9515');
+    try
+      Caps := TWebDriverCapabilities.Create;
+      try
+        Caps.BrowserName := 'chrome';
+        Driver.StartSession(Caps);
+      finally
+        Caps.Free;
+      end;
 
+      Driver.Navigate('https://translate.google.com/');
+
+      // Wait for translate box and send text
+      TranslateBox := Driver.WaitUntilElement(TBy.XPath('//*[@id="yDmH0d"]/c-wiz/div/div[2]/c-wiz/div[2]/c-wiz/div[1]/div[2]/div[2]/div/c-wiz/span/span/div/textarea'));
+      TranslateBox.SendKeys('Hello from DelphiWebDriver!');
+
+      // Take screenshot
+      Driver.SaveScreenshotToFile('screenshot.png');
+
+    finally
+      Driver.Quit;
+    end;
   finally
-    Driver.Quit;
-    Driver.Free;
+    Server.Stop;
+    Server.Free;
   end;
 end;
 ```
 
+---
+
+## ⚡ Notes
+
+* Use **interface variables** (`IWebDriver`, `IWebElement`) for safe automatic memory management.
+* Avoid keeping element references after quitting the driver.
+* `WaitUntilElement` supports **Id, Name, ClassName, CSS Selector, XPath**.
+* `TWebDriverServer` helps start/stop ChromeDriver for your tests.
+
+---
+
 ## 📜 License
 
-MIT License (recommended)
+MIT License
+
+---
 
 ## 🤝 Contributing
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
 
+---
+
 ## 🐞 Issues
 
-If you find a bug, please open an issue with:
+If you find a bug, please provide:
 
 * Steps to reproduce
 * Expected behavior
@@ -84,11 +138,16 @@ If you find a bug, please open an issue with:
 * Delphi version
 * WebDriver and browser version
 
+---
+
 ## 🗺️ Roadmap
 
-* [ ] Minimal viable implementation
+* [x] Minimal viable implementation
+* [x] Element location by CSS/XPath
+* [x] Wait for elements and conditions
+* [x] Click, send keys, submit forms
+* [x] Screenshot support
+* [x] Cookie management
+* [x] Frame handling
+* [ ] JavaScript execution
 * [ ] Full WebDriver command coverage
-* [ ] Better error handling
-* [ ] Async command support
-* [ ] Unit testing suite
-* [ ] Package for Delphi IDE
