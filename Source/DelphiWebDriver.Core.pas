@@ -70,6 +70,7 @@ type
     procedure MaximizeWindow;
     procedure MinimizeWindow;
     procedure FullscreenWindow;
+    function GetPageSource: string;
   end;
 
 implementation
@@ -144,6 +145,18 @@ begin
     if Handles[I] = Current then
       Exit(I);
   Result := -1;
+end;
+
+function TWebDriver.GetPageSource: string;
+var
+  JSON: TJSONValue;
+begin
+  JSON := SendCommand('GET', '/session/' + FSessionId + '/source');
+  try
+    Result := JSON.GetValue<string>('value');
+  finally
+    JSON.Free;
+  end;
 end;
 
 procedure TWebDriver.SwitchToWindowIndex(Index: Integer);

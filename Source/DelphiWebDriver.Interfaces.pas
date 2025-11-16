@@ -83,6 +83,7 @@ type
     procedure MaximizeWindow;
     procedure MinimizeWindow;
     procedure FullscreenWindow;
+    function GetPageSource: string;
   end;
 
 implementation
