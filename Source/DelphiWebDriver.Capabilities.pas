@@ -1,3 +1,10 @@
+{
+  ------------------------------------------------------------------------------
+  Author: ABDERRAHMANE
+  Github: https://github.com/DA213/DelphiWebDriver
+  ------------------------------------------------------------------------------
+}
+
 unit DelphiWebDriver.Capabilities;
 
 interface

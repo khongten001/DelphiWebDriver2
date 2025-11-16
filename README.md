@@ -1,6 +1,6 @@
 # DelphiWebDriver
 
-A modern, lightweight Delphi client for the W3C WebDriver protocol (the same protocol used by Selenium). This library allows Delphi developers to automate browsers such as Chrome, Firefox, and Edge by communicating with their corresponding WebDriver executables.
+A modern, lightweight Delphi client (No third party) for the W3C WebDriver protocol (the same protocol used by Selenium). This library allows Delphi developers to automate browsers such as Chrome, Firefox, and Edge by communicating with their corresponding WebDriver executables.
 
 ---
 

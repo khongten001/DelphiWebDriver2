@@ -1,3 +1,10 @@
+{
+  ------------------------------------------------------------------------------
+  Author: ABDERRAHMANE
+  Github: https://github.com/DA213/DelphiWebDriver
+  ------------------------------------------------------------------------------
+}
+
 unit DelphiWebDriver.Core;
 
 interface
@@ -17,8 +24,6 @@ uses
   DelphiWebDriver.Cookies;
 
 type
-  EWebDriverError = class(Exception);
-
   TWebDriver = class(TInterfacedObject, IWebDriver)
   private
     FHTTP: THTTPClient;

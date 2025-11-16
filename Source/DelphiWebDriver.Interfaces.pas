@@ -1,3 +1,10 @@
+{
+  ------------------------------------------------------------------------------
+  Author: ABDERRAHMANE
+  Github: https://github.com/DA213/DelphiWebDriver
+  ------------------------------------------------------------------------------
+}
+
 unit DelphiWebDriver.Interfaces;
 
 interface
@@ -5,6 +12,7 @@ interface
 uses
   System.JSON,
   System.SysUtils,
+  System.Types,
   DelphiWebDriver.Capabilities,
   DelphiWebDriver.Types;
 
@@ -21,10 +29,23 @@ type
     ['{F5C6E1F0-6A57-48F3-B7E8-BD3B38ACBB82}']
     function GetElementId: string;
     procedure Click;
+    procedure Clear;
     procedure SendKeys(const Text: string);
     procedure Submit;
     function GetText: string;
     function GetAttribute(const Attr: string): string;
+    function GetProperty(const Prop: string): string;
+    function GetDomAttribute(const Attr: string): string;
+    function GetDomProperty(const Prop: string): string;
+    function GetCssValue(const Name: string): string;
+    function IsDisplayed: Boolean;
+    function IsEnabled: Boolean;
+    function IsSelected: Boolean;
+    function GetLocation: TPoint;
+    function GetSize: TSize;
+    function GetRect: TRect;
+    function FindElement(By: TBy): IWebElement;
+    function FindElements(By: TBy): TArray<IWebElement>;
     property ElementId: string read GetElementId;
   end;
 

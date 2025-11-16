@@ -1,8 +1,21 @@
+{
+  ------------------------------------------------------------------------------
+  Author: ABDERRAHMANE
+  Github: https://github.com/DA213/DelphiWebDriver
+  ------------------------------------------------------------------------------
+}
+
 unit DelphiWebDriver.Types;
 
 interface
 
+uses
+  System.SysUtils,
+  System.JSON;
+
 type
+  EWebDriverError = class(Exception);
+
   TCookie = record
     Name: string;
     Value: string;
@@ -22,11 +35,19 @@ type
     class function CssSelector(const AValue: string): TBy; static;
     class function XPath(const AValue: string): TBy; static;
     class function Css(const AValue: string): TBy; static;
+    function ToJson: TJSONObject;
   end;
 
 implementation
 
 { TBy }
+
+function TBy.ToJson: TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.AddPair('using', Strategy);
+  Result.AddPair('value', Value);
+end;
 
 class function TBy.Css(const AValue: string): TBy;
 begin
@@ -65,3 +86,4 @@ begin
 end;
 
 end.
+
