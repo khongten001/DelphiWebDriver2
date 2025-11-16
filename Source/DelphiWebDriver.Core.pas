@@ -49,6 +49,8 @@ type
     function WaitUntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
     function ExecuteScript(const Script: string; const Args: array of string): TJSONValue; overload;
     procedure ExecuteScript(const Script: string); overload;
+    function ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue; overload;
+    procedure ExecuteAsyncScript(const Script: string); overload;
     procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
   end;
 
@@ -67,6 +69,44 @@ destructor TWebDriver.Destroy;
 begin
   FHTTP.Free;
   inherited;
+end;
+
+function TWebDriver.ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue;
+var
+  Body: TJSONObject;
+  Arr: TJSONArray;
+  S: string;
+begin
+  Body := TJSONObject.Create;
+  try
+    Body.AddPair('script', Script);
+
+    Arr := TJSONArray.Create;
+    Body.AddPair('args', Arr);
+
+    for S in Args do
+      Arr.AddElement(TJSONString.Create(S));
+
+    Result := SendCommand(
+      'POST',
+      '/session/' + FSessionId + '/execute/async',
+      Body
+    );
+  finally
+    Body.Free;
+  end;
+end;
+
+procedure TWebDriver.ExecuteAsyncScript(const Script: string);
+var
+  Resp: TJSONValue;
+begin
+  Resp := ExecuteAsyncScript(Script, []);
+  try
+    // ignore returned JS value
+  finally
+    Resp.Free;
+  end;
 end;
 
 procedure TWebDriver.ExecuteScript(const Script: string);

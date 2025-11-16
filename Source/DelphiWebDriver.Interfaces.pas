@@ -49,6 +49,8 @@ type
       IntervalMS: Integer = 200): IWebElement;
     function ExecuteScript(const Script: string; const Args: array of string): TJSONValue; overload;
     procedure ExecuteScript(const Script: string); overload;
+    function ExecuteAsyncScript(const Script: string; const Args: array of string): TJSONValue; overload;
+    procedure ExecuteAsyncScript(const Script: string); overload;
     procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
   end;
 
