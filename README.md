@@ -49,11 +49,13 @@ A modern, lightweight Delphi client (No third party) for the W3C WebDriver proto
 ### Requirements
 
 * Delphi 10.2+ (or any recent version)
-* Corresponding WebDriver binaries:
+* Corresponding WebDriver binaries:  
 
-  * ChromeDriver (download from here https://developer.chrome.com/docs/chromedriver/downloads)
+  * ChromeDriver - Chrome (download from here https://developer.chrome.com/docs/chromedriver/downloads)
+  * GeckoDriver - Firefox (download from here https://github.com/mozilla/geckodriver/releases)
+  * MSEdgeDriver - Edge (download from here https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver)
 
-Place the driver executable in your PATH or next to your application.
+Place the driver executable next to your application.
 
 ---
 
@@ -67,35 +69,62 @@ uses
   DelphiWebDriver.Server,
   DelphiWebDriver.Interfaces;
 
-procedure TMainForm.StartChromeButtonClick(Sender: TObject);
+procedure TMainForm.StartDriverButtonClick(Sender: TObject);
 var
   Server: TWebDriverServer;
   Driver: IWebDriver;
   Caps: TWebDriverCapabilities;
-  TranslateBox: IWebElement;
 begin
-  Server := TWebDriverServer.Create('chromedriver.exe');
-  try
-    Server.Start; // launch ChromeDriver
+  var DriverName := '';
+  var BrowserName := '';
+  if ChromeRadioButton.IsChecked then
+    begin
+      DriverName  := TBrowser.Chrome.DriverName;
+      BrowserName := TBrowser.Chrome.Name;
+    end;
+  if FirefoxRadioButton.IsChecked then
+    begin
+      DriverName  := TBrowser.Firefox.DriverName;
+      BrowserName := TBrowser.Firefox.Name;
+    end;
+  if EdgeRadioButton.IsChecked then
+    begin
+      DriverName  := TBrowser.Edge.DriverName;
+      BrowserName := TBrowser.Edge.Name;
+    end;
 
+  if DriverName.IsEmpty then
+    begin
+      LogsMemo.Text := 'You must select driver';
+      Exit;
+    end;
+
+  Server := TWebDriverServer.Create(DriverName);
+  try
+    Server.Start;
     Driver := TWebDriver.Create('http://localhost:9515');
     try
       Caps := TWebDriverCapabilities.Create;
       try
-        Caps.BrowserName := 'chrome';
+        Caps.BrowserName := BrowserName;
+        if HeadlessModeCheckBox.IsChecked then
+          Caps.Headless := True
+        else
+          Caps.Headless := False;
+
+        // Optional Args
+        // Caps.Args.Add('--disable-gpu');
+        // Caps.Args.Add('--window-size=1920,1080');
+
         Driver.StartSession(Caps);
       finally
         Caps.Free;
       end;
 
-      Driver.Navigate('https://translate.google.com/');
+      Driver.Navigate('https://www.google.com');
+      Driver.WaitUntilPageLoad;
 
-      // Wait for translate box and send text
-      TranslateBox := Driver.WaitUntilElement(TBy.XPath('//*[@id="yDmH0d"]/c-wiz/div/div[2]/c-wiz/div[2]/c-wiz/div[1]/div[2]/div[2]/div/c-wiz/span/span/div/textarea'));
-      TranslateBox.SendKeys('Hello from DelphiWebDriver!');
-
-      // Take screenshot
-      Driver.SaveScreenshotToFile('screenshot.png');
+      LogsMemo.Text := Driver.GetPageSource;
 
     finally
       Driver.Quit;
