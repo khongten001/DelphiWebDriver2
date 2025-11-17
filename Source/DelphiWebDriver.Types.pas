@@ -41,6 +41,7 @@ type
     class function CssSelector(const AValue: string): TBy; static;
     class function XPath(const AValue: string): TBy; static;
     class function Css(const AValue: string): TBy; static;
+    class function TagName(const AValue: string): TBy; static;
     function ToJson: TJSONObject;
   end;
 
@@ -89,6 +90,12 @@ class function TBy.ClassName(const AValue: string): TBy;
 begin
   Result.Strategy := 'class name';
   Result.Value := AValue;
+end;
+
+class function TBy.TagName(const AValue: string): TBy;
+begin
+  Result.Strategy := 'tag name';
+  Result.Value    := AValue;
 end;
 
 { TBrowserHelper }
