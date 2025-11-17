@@ -78,14 +78,14 @@ end;
 
 class function TBy.Name(const AValue: string): TBy;
 begin
-  Result.Strategy := 'name';
-  Result.Value := AValue;
+  Result.Strategy := 'css selector';
+  Result.Value := '[name="' + AValue.Trim + '"]';
 end;
 
 class function TBy.Id(const AValue: string): TBy;
 begin
-  Result.Strategy := 'id';
-  Result.Value := AValue;
+  Result.Strategy := 'css selector';
+  Result.Value := '#' + AValue.Trim;
 end;
 
 class function TBy.ClassName(const AValue: string): TBy;
