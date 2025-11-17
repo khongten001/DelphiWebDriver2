@@ -91,6 +91,9 @@ type
     function GetPageSource: string;
     function ElementExists(By: TBy): Boolean;
     function ElementsExist(By: TBy): Boolean;
+    procedure ScrollBy(X, Y: Integer);
+    procedure ScrollToTop;
+    procedure ScrollToBottom;
   end;
 
 implementation

@@ -73,6 +73,9 @@ type
     function GetPageSource: string;
     function ElementExists(By: TBy): Boolean;
     function ElementsExist(By: TBy): Boolean;
+    procedure ScrollBy(X, Y: Integer);
+    procedure ScrollToTop;
+    procedure ScrollToBottom;
   end;
 
 implementation
@@ -91,6 +94,21 @@ begin
   FCookies := nil;
   FHTTP.Free;
   inherited;
+end;
+
+procedure TWebDriver.ScrollBy(X, Y: Integer);
+begin
+  ExecuteScript(Format('window.scrollBy(%d, %d);', [X, Y]));
+end;
+
+procedure TWebDriver.ScrollToTop;
+begin
+  ExecuteScript('window.scrollTo(0,0);');
+end;
+
+procedure TWebDriver.ScrollToBottom;
+begin
+  ExecuteScript('window.scrollTo(0, document.body.scrollHeight);');
 end;
 
 function TWebDriver.GetWindowHandle: string;
