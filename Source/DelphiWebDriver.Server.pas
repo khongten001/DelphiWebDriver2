@@ -11,7 +11,8 @@ interface
 
 uses
   System.SysUtils,
-  Winapi.Windows;
+  Winapi.Windows,
+  TlHelp32;
 
 type
   TWebDriverServer = class
@@ -67,13 +68,48 @@ end;
 procedure TWebDriverServer.Stop;
 begin
   if not FStarted then Exit;
-  if WaitForSingleObject(FProcessInfo.hProcess, 1500) = WAIT_TIMEOUT then
+
+  if WaitForSingleObject(FProcessInfo.hProcess, 3000) = WAIT_TIMEOUT then
+  begin
     TerminateProcess(FProcessInfo.hProcess, 0);
+    WaitForSingleObject(FProcessInfo.hProcess, 1000);
+  end;
+
   if FProcessInfo.hProcess <> 0 then
+  begin
     CloseHandle(FProcessInfo.hProcess);
+    FProcessInfo.hProcess := 0;
+  end;
+
   if FProcessInfo.hThread <> 0 then
+  begin
     CloseHandle(FProcessInfo.hThread);
+    FProcessInfo.hThread := 0;
+  end;
+
   FStarted := False;
+
+  var ProcName := ExtractFileName(FExePath);
+  var Snap := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if Snap <> INVALID_HANDLE_VALUE then
+  try
+    var PE: TProcessEntry32;
+    PE.dwSize := SizeOf(PE);
+    if Process32First(Snap, PE) then
+    repeat
+      if SameText(PE.szExeFile, ProcName) then
+      begin
+        var HProc := OpenProcess(PROCESS_TERMINATE, False, PE.th32ProcessID);
+        if HProc <> 0 then
+        begin
+          TerminateProcess(HProc, 0);
+          CloseHandle(HProc);
+        end;
+      end;
+    until not Process32Next(Snap, PE);
+  finally
+    CloseHandle(Snap);
+  end;
 end;
 
 end.

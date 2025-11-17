@@ -8,13 +8,13 @@ A modern, lightweight Delphi client (No third party) for the W3C WebDriver proto
 
 * Create and manage WebDriver sessions
 * Navigate to URLs
-* Locate elements (`By.Id`, `By.Name`, `By.ClassName`, `By.CSS`, `By.XPath`)
+* Locate elements (`By.Id`, `By.Name`, `By.ClassName`, `By.CSS`, `By.XPath`...)
 * Click elements, send keys, submit forms
 * Take screenshots and save to file
 * Wait for elements to appear or conditions to be true
 * Manage cookies, frames
 * Interface-based memory management for stability
-* Cross-browser support (Chrome only for now)
+* Cross-browser support (Chrome, Firefox, Edge)
 * And more cool stuff is coming...
 
 ---
@@ -148,7 +148,8 @@ If you find a bug, please provide:
 * [x] Wait for elements and conditions
 * [x] Click, send keys, submit forms
 * [x] Wait for page to load
-* [x] Screenshot support
+* [x] Screenshot support  
+* [x] Cross-browser (Chrome, Firefox, Edge)
 * [x] Cookie management
 * [x] Frame handling
 * [x] JavaScript execution
