@@ -5,7 +5,7 @@
   ------------------------------------------------------------------------------
 }
 
-unit DelphiWebDriver.Capabilities;
+unit DelphiWebDriver.Core.Capabilities;
 
 interface
 
@@ -13,14 +13,20 @@ uses
   System.SysUtils,
   System.JSON,
   System.Generics.Collections,
+  DelphiWebDriver.Interfaces,
   DelphiWebDriver.Types;
 
 type
-  TWebDriverCapabilities = class
+  TWebDriverCapabilities = class(TInterfacedObject, IWebDriverCapabilities)
   private
     FBrowserName: string;
     FHeadless: Boolean;
     FArgs: TList<string>;
+    function GetBrowserName: string;
+    procedure SetBrowserName(const Value: string);
+    function GetHeadless: Boolean;
+    procedure SetHeadless(const Value: Boolean);
+    function GetArgs: TList<string>;
   public
     constructor Create;
     destructor Destroy; override;
@@ -45,6 +51,31 @@ destructor TWebDriverCapabilities.Destroy;
 begin
   FArgs.Free;
   inherited;
+end;
+
+function TWebDriverCapabilities.GetArgs: TList<string>;
+begin
+  Result := FArgs;
+end;
+
+function TWebDriverCapabilities.GetBrowserName: string;
+begin
+  Result := FBrowserName;
+end;
+
+procedure TWebDriverCapabilities.SetBrowserName(const Value: string);
+begin
+  FBrowserName := Value;
+end;
+
+function TWebDriverCapabilities.GetHeadless: Boolean;
+begin
+  Result := FHeadless;
+end;
+
+procedure TWebDriverCapabilities.SetHeadless(const Value: Boolean);
+begin
+  FHeadless := Value;
 end;
 
 function TWebDriverCapabilities.ToJSON: TJSONObject;

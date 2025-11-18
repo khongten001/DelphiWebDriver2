@@ -5,7 +5,7 @@
   ------------------------------------------------------------------------------
 }
 
-unit DelphiWebDriver.Cookies;
+unit DelphiWebDriver.Core.Cookies;
 
 interface
 
@@ -74,7 +74,7 @@ var
   Cookie: TCookie;
   List: TList<TCookie>;
 begin
-  LResp := FDriver.SendCommand('GET', '/session/' + FDriver.GetSessionId +
+  LResp := FDriver.Commands.SendCommand('GET', '/session/' + FDriver.Sessions.GetSessionId +
     '/cookie');
   try
     LArr := LResp.GetValue<TJSONArray>('value');
@@ -119,7 +119,7 @@ begin
       if Cookie.Expiry > 0 then
         LObj.AddPair('expiry', TJSONNumber.Create(Cookie.Expiry));
       LBody.AddPair('cookie', LObj);
-      FDriver.SendCommand('POST', '/session/' + FDriver.GetSessionId +
+      FDriver.Commands.SendCommand('POST', '/session/' + FDriver.Sessions.GetSessionId +
         '/cookie', LBody).Free;
     except
       LObj.Free;
@@ -132,13 +132,13 @@ end;
 
 procedure TWebDriverCookies.Delete(const Name: string);
 begin
-  FDriver.SendCommand('DELETE', '/session/' + FDriver.GetSessionId + '/cookie/'
+  FDriver.Commands.SendCommand('DELETE', '/session/' + FDriver.Sessions.GetSessionId + '/cookie/'
     + Name).Free;
 end;
 
 procedure TWebDriverCookies.DeleteAll;
 begin
-  FDriver.SendCommand('DELETE', '/session/' + FDriver.GetSessionId +
+  FDriver.Commands.SendCommand('DELETE', '/session/' + FDriver.Sessions.GetSessionId +
     '/cookie').Free;
 end;
 
