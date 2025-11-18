@@ -10,12 +10,6 @@ unit DelphiWebDriver.Core;
 interface
 
 uses
-  System.SysUtils,
-  System.Classes,
-  System.JSON,
-  System.Generics.Collections,
-  System.DateUtils,
-  System.NetEncoding,
   DelphiWebDriver.Interfaces,
   DelphiWebDriver.Types,
   DelphiWebDriver.Element,
