@@ -48,7 +48,7 @@ A modern, lightweight Delphi client (No third party) for the W3C WebDriver proto
 ```
 
 > `Source/` contains the core library units
-> `Demo/` contains a small FMX demo showing Chrome automation
+> `Demo/` contains a small FMX demo showing simple automation
 
 ---
 
@@ -116,7 +116,7 @@ begin
       // Driver.Capabilities.Args.Add('--disable-gpu');
       // Driver.Capabilities.Args.Add('--window-size=1920,1080');
       Driver.Sessions.StartSession;
-      Driver.Navigation.Navigate('https://api.myip.com');
+      Driver.Navigation.Navigate('https://www.google.com');
       Driver.Wait.WaitUntilPageLoad;
       LogsMemo.Text := Driver.Document.GetPageSource;
     finally
