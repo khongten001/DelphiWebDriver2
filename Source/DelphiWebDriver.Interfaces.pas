@@ -80,7 +80,7 @@ type
 
   IWebDriverNavigation = interface
     ['{A3F7C2B1-9D44-4E89-AB12-7F5C3D9084EF}']
-    procedure Navigate(const Url: string);
+    procedure GoToURL(const Url: string);
     function GetTitle: string;
     function GetCurrentUrl: string;
     procedure GoBack;
@@ -105,7 +105,7 @@ type
     function GetArgs: TList<string>;
     property BrowserName: string read GetBrowserName write SetBrowserName;
     property Headless: Boolean read GetHeadless write SetHeadless;
-    property Args: TList<string> read GetArgs;
+    property Arguments: TList<string> read GetArgs;
     function ToJSON: TJSONObject;
   end;
 

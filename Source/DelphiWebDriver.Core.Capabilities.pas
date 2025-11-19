@@ -32,7 +32,7 @@ type
     destructor Destroy; override;
     property BrowserName: string read FBrowserName write FBrowserName;
     property Headless: Boolean read FHeadless write FHeadless;
-    property Args: TList<string> read FArgs;
+    property Arguments: TList<string> read FArgs;
     function ToJSON: TJSONObject;
   end;
 

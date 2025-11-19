@@ -21,7 +21,7 @@ type
     FDriver: IWebDriver;
   public
     constructor Create(ADriver: IWebDriver);
-    procedure Navigate(const Url: string);
+    procedure GoToURL(const Url: string);
     function GetTitle: string;
     function GetCurrentUrl: string;
     procedure GoBack;
@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TWebDriverNavigation.Navigate(const Url: string);
+procedure TWebDriverNavigation.GoToURL(const Url: string);
 var
   JSON: TJSONObject;
 begin

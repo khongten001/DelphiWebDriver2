@@ -92,7 +92,7 @@ begin
       // Driver.Capabilities.Args.Add('--disable-gpu');
       // Driver.Capabilities.Args.Add('--window-size=1920,1080');
       Driver.Sessions.StartSession;
-      Driver.Navigation.Navigate('https://www.google.com');
+      Driver.Navigation.GoToURL('https://www.google.com');
       Driver.Wait.WaitUntilPageLoad;
       LogsMemo.Text := Driver.Document.GetPageSource;
       Driver.Screenshot.SaveScreenshotToFile('Screenshot.png');
