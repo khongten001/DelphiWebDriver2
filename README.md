@@ -41,6 +41,8 @@ A modern, lightweight Delphi client (No third party) for the W3C WebDriver proto
 	DelphiWebDriver.Core.Screenshot.pas
 	DelphiWebDriver.Core.Sessions.pas
 	DelphiWebDriver.Core.Wait.pas
+	DelphiWebDriver.Core.Alert.pas
+	DelphiWebDriver.Core.Actions.pas
 	DelphiWebDriver.Element.pas
 	DelphiWebDriver.Interfaces.pas
 	DelphiWebDriver.Server.pas
