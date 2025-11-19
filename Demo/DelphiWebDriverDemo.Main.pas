@@ -89,12 +89,16 @@ begin
       Driver.Capabilities.BrowserName := BrowserName;
       Driver.Capabilities.Headless := HeadlessModeCheckBox.IsChecked;
       Driver.Sessions.StartSession;
-      Driver.Navigation.GoToURL('https://www.google.com');
+      Driver.Navigation.GoToURL('https://translate.google.com');
       Driver.Wait.WaitUntilPageLoad;
-      Driver.Document.ExecuteScript('confirm("im a cool alert to test accept from DelphiWebDriver :)");');
-      Sleep(2000);
-      Driver.Alert.Accept;
-      Sleep(3000);
+
+
+      Driver.Actions.MoveToElement(TBy.ClassName('er8xn')).Click
+                                                          .SendKeys('DelphiWebDriver Is Here')
+                                                          .Perform;
+
+      ShowMessage('Msg Sent :)');
+
     finally
       Driver.Sessions.Quit;
     end;
