@@ -157,6 +157,14 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ---
 
+### 💖 Support the Project
+
+If you would like to support this project, you can make a donation via PayPal:
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/abderrahmane213)
+
+---
+
 ## 🐞 Issues
 
 If you find a bug, please provide:
