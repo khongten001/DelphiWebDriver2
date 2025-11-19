@@ -21,7 +21,8 @@ uses
   DelphiWebDriver.Core.Document,
   DelphiWebDriver.Core.Wait,
   DelphiWebDriver.Core.Screenshot,
-  DelphiWebDriver.Core.Alert;
+  DelphiWebDriver.Core.Alert,
+  DelphiWebDriver.Core.Actions;
 
 type
   TWebDriver = class(TInterfacedObject, IWebDriver)
@@ -38,6 +39,7 @@ type
     FWait : IWebDriverWait;
     FScreenshot : IWebDriverScreenshot;
     FAlert : IWebDriverAlert;
+    FActions : IWebDriverActions;
   public
     constructor Create(const ABaseUrl: string); virtual;
     function Capabilities: IWebDriverCapabilities;
@@ -51,6 +53,7 @@ type
     function Wait : IWebDriverWait;
     function Screenshot : IWebDriverScreenshot;
     function Alert : IWebDriverAlert;
+    function Actions : IWebDriverActions;
   end;
 
 implementation
@@ -68,6 +71,13 @@ begin
   if FDocument = nil then
     FDocument := TWebDriverDocument.Create(Self as IWebDriver);
   Result := FDocument;
+end;
+
+function TWebDriver.Actions: IWebDriverActions;
+begin
+  if FActions = nil then
+    FActions := TWebDriverActions.Create(Self as IWebDriver);
+  Result := FActions;
 end;
 
 function TWebDriver.Alert: IWebDriverAlert;

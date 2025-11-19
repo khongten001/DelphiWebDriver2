@@ -19,6 +19,17 @@ uses
 type
   IWebElement = interface;
 
+  IWebDriverActions = interface
+    ['{3F8C0F5A-2B4D-4E92-A8A9-9F4B6D8C3E21}']
+    function MoveToElement(By: TBy; X: Integer = 0; Y: Integer = 0): IWebDriverActions;
+    function Click: IWebDriverActions;
+    function DoubleClick: IWebDriverActions;
+    function ClickAndHold: IWebDriverActions;
+    function Release: IWebDriverActions;
+    function SendKeys(const Keys: string): IWebDriverActions;
+    procedure Perform;
+  end;
+
   IWebDriverAlert = interface
     ['{A3F9C2B8-5E41-4D92-8F7A-9C6B1F4E12D3}']
     procedure Accept;
@@ -165,6 +176,7 @@ type
     function Wait : IWebDriverWait;
     function Screenshot : IWebDriverScreenshot;
     function Alert : IWebDriverAlert;
+    function Actions : IWebDriverActions;
   end;
 
 implementation

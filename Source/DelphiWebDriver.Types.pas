@@ -16,6 +16,15 @@ uses
 type
   EWebDriverError = class(Exception);
 
+  TWebDriverActionItemType = (MouseMove, MouseDown, MouseUp, Click, DoubleClick, KeyDown, KeyUp, Pause);
+
+  TWebDriverActionItem = record
+    ActionType: TWebDriverActionItemType;
+    ElementId: string;
+    Key: string;
+    X, Y: Integer;
+  end;
+
   TWebDriverBrowser = (Chrome, Firefox, Edge);
   TWebDriverBrowserHelper = record Helper for TWebDriverBrowser
     function Name : String;
