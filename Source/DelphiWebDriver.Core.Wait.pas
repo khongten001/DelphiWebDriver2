@@ -23,9 +23,9 @@ type
     FDriver: IWebDriver;
   public
     constructor Create(ADriver: IWebDriver);
-    function WaitUntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
-    function WaitUntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
-    procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
+    function UntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
+    function UntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
+    procedure UntilPageLoad(TimeoutMS: Integer = 10000);
   end;
 
 implementation
@@ -38,7 +38,7 @@ begin
   FDriver := ADriver;
 end;
 
-function TWebDriverWait.WaitUntilElement(By: TBy; TimeoutMS, IntervalMS: Integer): IWebElement;
+function TWebDriverWait.UntilElement(By: TBy; TimeoutMS, IntervalMS: Integer): IWebElement;
 var
   ElemTemp: IWebElement;
   StartTime: TDateTime;
@@ -62,7 +62,7 @@ begin
   Result := nil;
 end;
 
-function TWebDriverWait.WaitUntilElements(By: TBy; TimeoutMS, IntervalMS: Integer): TArray<IWebElement>;
+function TWebDriverWait.UntilElements(By: TBy; TimeoutMS, IntervalMS: Integer): TArray<IWebElement>;
 var
   Found: TArray<IWebElement>;
   StartTime: TDateTime;
@@ -85,7 +85,7 @@ begin
   SetLength(Result, 0);
 end;
 
-procedure TWebDriverWait.WaitUntilPageLoad(TimeoutMS: Integer);
+procedure TWebDriverWait.UntilPageLoad(TimeoutMS: Integer);
 var
   StartTime: TDateTime;
   Resp: TJSONValue;

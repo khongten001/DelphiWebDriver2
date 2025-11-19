@@ -48,9 +48,9 @@ type
 
   IWebDriverWait = interface
     ['{9E4A2C71-6BD3-4F8F-91C5-7A2F4D8E3B10}']
-    function WaitUntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
-    function WaitUntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
-    procedure WaitUntilPageLoad(TimeoutMS: Integer = 10000);
+    function UntilElement(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): IWebElement;
+    function UntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
+    procedure UntilPageLoad(TimeoutMS: Integer = 10000);
   end;
 
   IWebDriverDocument = interface
