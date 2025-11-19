@@ -19,6 +19,14 @@ uses
 type
   IWebElement = interface;
 
+  IWebDriverAlert = interface
+    ['{A3F9C2B8-5E41-4D92-8F7A-9C6B1F4E12D3}']
+    procedure Accept;
+    procedure Dismiss;
+    function GetText: string;
+    procedure SendKeys(const Text: string);
+  end;
+
   IWebDriverScreenshot = interface
     ['{D7F3A59C-2E41-4B8D-9F6B-1C3A7E5D8B20}']
     function TakeScreenshot: TBytes;
@@ -156,6 +164,7 @@ type
     function Document : IWebDriverDocument;
     function Wait : IWebDriverWait;
     function Screenshot : IWebDriverScreenshot;
+    function Alert : IWebDriverAlert;
   end;
 
 implementation
