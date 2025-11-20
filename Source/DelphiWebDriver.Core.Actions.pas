@@ -22,6 +22,7 @@ type
     function Click: IWebDriverActions;
     function DoubleClick: IWebDriverActions;
     function ClickAndHold: IWebDriverActions;
+    function ContextClick(By: TBy): IWebDriverActions;
     function Release: IWebDriverActions;
     function SendKeys(const Keys: string): IWebDriverActions;
     procedure Perform;
@@ -87,6 +88,20 @@ begin
   Result := Self;
 end;
 
+function TWebDriverActions.ContextClick(By: TBy): IWebDriverActions;
+var
+  Elem: IWebElement;
+  Item: TWebDriverActionItem;
+begin
+  Elem := FDriver.Elements.FindElement(By);
+  if not Assigned(Elem) then
+    raise EWebDriverError.CreateFmt('Element not found for: %s = %s', [By.Strategy, By.Value]);
+  Item.ActionType := TWebDriverActionItemType.ContextClick;
+  Item.ElementId := Elem.ElementId;
+  FActions.Add(Item);
+  Result := Self;
+end;
+
 function TWebDriverActions.Release: IWebDriverActions;
 var
   Item: TWebDriverActionItem;
@@ -120,7 +135,7 @@ var
   PointerActionsArray, KeyActionsArray: TJSONArray;
   I: Integer;
   ActionItem: TWebDriverActionItem;
-  ActionObj, OriginObj: TJSONObject;
+  ActionObj, OriginObj, PauseObj: TJSONObject;
 begin
   if FActions.Count = 0 then
     Exit;
@@ -135,54 +150,94 @@ begin
     for I := 0 to FActions.Count - 1 do
     begin
       ActionItem := FActions[I];
-      if ActionItem.ActionType in [TWebDriverActionItemType.MouseMove, TWebDriverActionItemType.Click,
-                                   TWebDriverActionItemType.DoubleClick, TWebDriverActionItemType.MouseDown,
-                                   TWebDriverActionItemType.MouseUp] then
+      if ActionItem.ActionType in [
+         TWebDriverActionItemType.MouseMove,
+         TWebDriverActionItemType.Click,
+         TWebDriverActionItemType.DoubleClick,
+         TWebDriverActionItemType.MouseDown,
+         TWebDriverActionItemType.MouseUp,
+         TWebDriverActionItemType.ContextClick
+         ] then
       begin
-        ActionObj := TJSONObject.Create;
         case ActionItem.ActionType of
           TWebDriverActionItemType.MouseMove:
             begin
+              ActionObj := TJSONObject.Create;
               ActionObj.AddPair('type', 'pointerMove');
               OriginObj := TJSONObject.Create;
               OriginObj.AddPair('element-6066-11e4-a52e-4f735466cecf', ActionItem.ElementId);
               ActionObj.AddPair('origin', OriginObj);
               ActionObj.AddPair('x', TJSONNumber.Create(ActionItem.X));
               ActionObj.AddPair('y', TJSONNumber.Create(ActionItem.Y));
+              PointerActionsArray.Add(ActionObj);
             end;
           TWebDriverActionItemType.Click:
             begin
+              ActionObj := TJSONObject.Create;
               ActionObj.AddPair('type', 'pointerDown');
               ActionObj.AddPair('button', TJSONNumber.Create(0));
               PointerActionsArray.Add(ActionObj);
               ActionObj := TJSONObject.Create;
               ActionObj.AddPair('type', 'pointerUp');
               ActionObj.AddPair('button', TJSONNumber.Create(0));
+              PointerActionsArray.Add(ActionObj);
             end;
+
           TWebDriverActionItemType.DoubleClick:
             begin
-              ActionObj.AddPair('type', 'pointerDown'); ActionObj.AddPair('button', TJSONNumber.Create(0));
+              ActionObj := TJSONObject.Create; ActionObj.AddPair('type','pointerDown'); ActionObj.AddPair('button', TJSONNumber.Create(0));
               PointerActionsArray.Add(ActionObj);
-              ActionObj := TJSONObject.Create; ActionObj.AddPair('type', 'pointerUp'); ActionObj.AddPair('button', TJSONNumber.Create(0));
+              ActionObj := TJSONObject.Create; ActionObj.AddPair('type','pointerUp'); ActionObj.AddPair('button', TJSONNumber.Create(0));
               PointerActionsArray.Add(ActionObj);
-              ActionObj := TJSONObject.Create; ActionObj.AddPair('type', 'pointerDown'); ActionObj.AddPair('button', TJSONNumber.Create(0));
+              ActionObj := TJSONObject.Create; ActionObj.AddPair('type','pointerDown'); ActionObj.AddPair('button', TJSONNumber.Create(0));
               PointerActionsArray.Add(ActionObj);
-              ActionObj := TJSONObject.Create; ActionObj.AddPair('type', 'pointerUp'); ActionObj.AddPair('button', TJSONNumber.Create(0));
+              ActionObj := TJSONObject.Create; ActionObj.AddPair('type','pointerUp'); ActionObj.AddPair('button', TJSONNumber.Create(0));
+              PointerActionsArray.Add(ActionObj);
             end;
+
           TWebDriverActionItemType.MouseDown:
             begin
+              ActionObj := TJSONObject.Create;
               ActionObj.AddPair('type', 'pointerDown');
               ActionObj.AddPair('button', TJSONNumber.Create(0));
+              PointerActionsArray.Add(ActionObj);
             end;
+
           TWebDriverActionItemType.MouseUp:
             begin
+              ActionObj := TJSONObject.Create;
               ActionObj.AddPair('type', 'pointerUp');
               ActionObj.AddPair('button', TJSONNumber.Create(0));
+              PointerActionsArray.Add(ActionObj);
+            end;
+
+          TWebDriverActionItemType.ContextClick:
+            begin
+              ActionObj := TJSONObject.Create;
+              ActionObj.AddPair('type', 'pointerMove');
+              OriginObj := TJSONObject.Create;
+              OriginObj.AddPair('element-6066-11e4-a52e-4f735466cecf', ActionItem.ElementId);
+              ActionObj.AddPair('origin', OriginObj);
+              ActionObj.AddPair('x', TJSONNumber.Create(0));
+              ActionObj.AddPair('y', TJSONNumber.Create(0));
+              PointerActionsArray.Add(ActionObj);
+              ActionObj := TJSONObject.Create;
+              ActionObj.AddPair('type', 'pointerDown');
+              ActionObj.AddPair('button', TJSONNumber.Create(2));
+              PointerActionsArray.Add(ActionObj);
+              PauseObj := TJSONObject.Create;
+              PauseObj.AddPair('type', 'pause');
+              PauseObj.AddPair('duration', TJSONNumber.Create(50));
+              PointerActionsArray.Add(PauseObj);
+              ActionObj := TJSONObject.Create;
+              ActionObj.AddPair('type', 'pointerUp');
+              ActionObj.AddPair('button', TJSONNumber.Create(2));
+              PointerActionsArray.Add(ActionObj);
             end;
         end;
-        PointerActionsArray.Add(ActionObj);
       end;
     end;
+
     PointerAction.AddPair('actions', PointerActionsArray);
     KeyboardAction := TJSONObject.Create;
     KeyboardAction.AddPair('type', 'key');
@@ -190,13 +245,13 @@ begin
     for I := 0 to FActions.Count - 1 do
     begin
       ActionItem := FActions[I];
-      if ActionItem.ActionType in [KeyDown, KeyUp] then
+      if ActionItem.ActionType in [TWebDriverActionItemType.KeyDown, TWebDriverActionItemType.KeyUp] then
       begin
         ActionObj := TJSONObject.Create;
-        case ActionItem.ActionType of
-          KeyDown: ActionObj.AddPair('type', 'keyDown');
-          KeyUp:   ActionObj.AddPair('type', 'keyUp');
-        end;
+        if ActionItem.ActionType = TWebDriverActionItemType.KeyDown then
+          ActionObj.AddPair('type', 'keyDown')
+        else
+          ActionObj.AddPair('type', 'keyUp');
         ActionObj.AddPair('value', ActionItem.Key);
         KeyActionsArray.Add(ActionObj);
       end;

@@ -16,7 +16,7 @@ uses
 type
   EWebDriverError = class(Exception);
 
-  TWebDriverActionItemType = (MouseMove, MouseDown, MouseUp, Click, DoubleClick, KeyDown, KeyUp, Pause);
+  TWebDriverActionItemType = (MouseMove, MouseDown, MouseUp, Click, DoubleClick, KeyDown, KeyUp, Pause, ContextClick);
 
   TWebDriverActionItem = record
     ActionType: TWebDriverActionItemType;

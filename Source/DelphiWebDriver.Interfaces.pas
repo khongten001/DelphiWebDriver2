@@ -25,6 +25,7 @@ type
     function Click: IWebDriverActions;
     function DoubleClick: IWebDriverActions;
     function ClickAndHold: IWebDriverActions;
+    function ContextClick(By: TBy): IWebDriverActions;
     function Release: IWebDriverActions;
     function SendKeys(const Keys: string): IWebDriverActions;
     procedure Perform;
