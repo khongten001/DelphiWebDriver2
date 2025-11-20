@@ -52,6 +52,10 @@ type
     function UntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
     procedure UntilPageLoad(TimeoutMS: Integer = 10000);
     function UntilElementDisappears(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): Boolean;
+    function UntilUrlContains(const Text: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilUrlIs(const Value: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilTitleIs(const Value: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilTitleContains(const Text: string; TimeoutMS: Integer = 5000): Boolean;
   end;
 
   IWebDriverDocument = interface

@@ -11,6 +11,7 @@ interface
 
 uses
   System.SysUtils,
+  System.StrUtils,
   System.JSON,
   System.DateUtils,
   DelphiWebDriver.Interfaces,
@@ -27,6 +28,10 @@ type
     function UntilElements(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): TArray<IWebElement>;
     procedure UntilPageLoad(TimeoutMS: Integer = 10000);
     function UntilElementDisappears(By: TBy; TimeoutMS: Integer = 5000; IntervalMS: Integer = 200): Boolean;
+    function UntilUrlContains(const Text: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilUrlIs(const Value: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilTitleIs(const Value: string; TimeoutMS: Integer = 5000): Boolean;
+    function UntilTitleContains(const Text: string; TimeoutMS: Integer = 5000): Boolean;
   end;
 
 implementation
@@ -37,6 +42,75 @@ constructor TWebDriverWait.Create(ADriver: IWebDriver);
 begin
   inherited Create;
   FDriver := ADriver;
+end;
+
+function TWebDriverWait.UntilUrlContains(const Text: string; TimeoutMS: Integer): Boolean;
+var
+  Start: TDateTime;
+begin
+  Start := Now;
+  while MilliSecondsBetween(Now, Start) < TimeoutMS do
+  begin
+    try
+      if FDriver.Navigation.GetCurrentUrl.ToLower.Contains(Text.ToLower) then
+        Exit(True);
+    except
+    end;
+    Sleep(100);
+  end;
+  Result := False;
+end;
+
+function TWebDriverWait.UntilUrlIs(const Value: string; TimeoutMS: Integer): Boolean;
+var
+  Start: TDateTime;
+begin
+  Start := Now;
+  while MilliSecondsBetween(Now, Start) < TimeoutMS do
+  begin
+    try
+      if SameText(FDriver.Navigation.GetCurrentUrl, Value) then
+        Exit(True);
+    except
+    end;
+    Sleep(100);
+  end;
+  Result := False;
+end;
+
+function TWebDriverWait.UntilTitleIs(const Value: string; TimeoutMS: Integer): Boolean;
+var
+  Start: TDateTime;
+begin
+  Start := Now;
+  while MilliSecondsBetween(Now, Start) < TimeoutMS do
+  begin
+    try
+      if SameText(FDriver.Navigation.GetTitle, Value) then
+        Exit(True);
+    except
+    end;
+    Sleep(100);
+  end;
+  Result := False;
+end;
+
+function TWebDriverWait.UntilTitleContains(const Text: string; TimeoutMS: Integer): Boolean;
+var
+  Start: TDateTime;
+begin
+  Start := Now;
+  while MilliSecondsBetween(Now, Start) < TimeoutMS do
+  begin
+    try
+      if FDriver.Navigation.GetTitle.ToLower.Contains(Text.ToLower) then
+        Exit(True);
+    except
+    end;
+
+    Sleep(100);
+  end;
+  Result := False;
 end;
 
 function TWebDriverWait.UntilElementDisappears(By: TBy; TimeoutMS, IntervalMS: Integer): Boolean;
